@@ -1,0 +1,17 @@
+@mixin diy_size($width,$height){
+  width: $width;
+  height: $height;
+  line-height: $height;
+}
+@mixin diy_size_except($width,$height){
+  width: $width;
+  height: $height;
+}
+@mixin diy_size_minHeight($width,$height){
+  width: $width;
+  min-height: $height;
+}
+@mixin diy_size_minWidth($width,$height){
+  min-width: $width;
+  height: $height;
+}

@@ -23,5 +23,11 @@ export default{
       url: '/api/ali-pay/trade/refund/' + orderNo + '/' + reason,
       method: 'post'
     })
+  },
+  list(userId){
+    return request({
+      url: '/api/order-info/list/' + userId,
+      method: 'post'
+    })
   }
 }

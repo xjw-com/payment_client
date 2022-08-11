@@ -4,13 +4,18 @@ import IndexView from '../views/IndexPay.vue'
 const routes = [
   {
     path: '/',
-    name: 'indexView',
+    name: 'IndexView',
     component: IndexView
   },
   {
     path: '/indexSuccess',
-    name: 'indexSuccess',
+    name: 'IndexSuccess',
     component: () => import('../views/IndexSuccess.vue')
+  },
+  {
+    path: '/indexOrder',
+    name: 'IndexOrder',
+    component: () => import('../views/IndexOrder.vue')
   }
 ]
 

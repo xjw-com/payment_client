@@ -12,4 +12,9 @@ import ElementPlus from 'element-plus'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
-createApp(App).use(store).use(router).use(ElementPlus).use(Antd).mount('#app')
+// 引入vex-table
+import 'xe-utils'
+import VXETable from 'vxe-table'
+import 'vxe-table/lib/style.css'
+
+createApp(App).use(store).use(router).use(ElementPlus).use(Antd).use(VXETable).mount('#app')

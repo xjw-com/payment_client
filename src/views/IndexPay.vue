@@ -79,6 +79,7 @@
 </template>
 
 <script>
+
 import { reactive,ref} from 'vue';
 import aliPayApi from "@/api/aliPayApi";
 // import QrcodeVue from 'qrcode.vue'
@@ -164,15 +165,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@mixin diy_size($width,$height){
-  width: $width;
-  height: $height;
-  line-height: $height;
-}
-@mixin diy_size_except($width,$height){
-  width: $width;
-  height: $height;
-}
 .payment_navigation {
   @include diy_size(100%,500px);
   position: relative;
