@@ -24,8 +24,6 @@ export default defineComponent({
       })
     })
 
-
-
     const gridOptions = reactive({
       border: true,
       showHeaderOverflow: true,
