@@ -49,7 +49,6 @@ export default defineComponent ({
     }
 
     const toPay = async (productId) => {
-      console.log(productId)
       //调用支付宝统一收单下单并支付页面接口
       aliPayApi.tradePagePay(productId,96).then((response) => {
         //将支付宝返回的表单字符串写在浏览器中，表单会自动触发submit提交
