@@ -1,12 +1,12 @@
 // axios 发送ajax请求
 import request from '@/utils/request'
 
-export default{
+export default {
 
   //发起支付请求
-  tradePagePay(productId) {
+  tradePagePay(productId,userId) {
     return request({
-      url: '/api/ali-pay/trade/page/pay/' + productId,
+      url: '/api/ali-pay/trade/page/pay/' + productId + '/' + userId,
       method: 'post'
     })
   },
@@ -24,10 +24,17 @@ export default{
       method: 'post'
     })
   },
-  list(userId){
+  // 订单列表
+  list(userId) {
     return request({
       url: '/api/order-info/list/' + userId,
       method: 'post'
+    })
+  },
+  productList() {
+    return request({
+      url: '/api/product/list',
+      method: 'get'
     })
   }
 }

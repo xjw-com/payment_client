@@ -2,27 +2,37 @@
   <div class="order_body">
     <div class="order_header">这里是头部</div>
     <div class="order_body_content">
-      <div v-for="list in orderList" :key="list">
-        {{list}}
+      <div v-for="list in orderList.list" :key="list">
+        {{ list.id }}
       </div>
-<!--      <vxe-grid v-bind="gridOptions"></vxe-grid>-->
+      <!--      <vxe-grid v-bind="gridOptions"></vxe-grid>-->
     </div>
   </div>
 </template>
 
 <script>
 import aliPayApi from "@/api/aliPayApi";
-import { defineComponent, reactive,onMounted } from 'vue'
+import {defineComponent, reactive} from 'vue'
 
 export default defineComponent({
   name: "IndexOrder",
-  setup(){
-    let orderList=reactive(null)
-    onMounted(() => {
-      aliPayApi.list(2).then((response)=>{
-         orderList=response.data;
+  setup() {
+    // let orderList=reactive(null)
+    // onMounted(() => {
+    //   aliPayApi.list(2).then((response)=>{
+    //      orderList=response.data;
+    //   })
+    // })
+
+    let orderList = reactive({
+      list:[],
+    });
+    const list = async () => {
+      aliPayApi.list(2).then((response) => {
+        orderList.list=response.data.list;
       })
-    })
+    }
+
 
     const gridOptions = reactive({
       border: true,
@@ -42,31 +52,34 @@ export default defineComponent({
         pageSize: 10
       },
       columns: [
-        { type: 'seq', width: 60 },
-        { field: 'name', title: '商品',sortable: true },
-        { field: 'unit_price', title: '单价' },
-        { field: 'order_amount', title: '数量' },
-        { field: 'payment_type',
+        {type: 'seq', width: 60},
+        {field: 'name', title: '商品', sortable: true},
+        {field: 'unit_price', title: '单价'},
+        {field: 'order_amount', title: '数量'},
+        {
+          field: 'payment_type',
           title: '支付方式',
           sortable: true,
           filters: [
-            { label: '支付宝', value: '支付宝' },
-            { label: '微信', value: '微信' }
+            {label: '支付宝', value: '支付宝'},
+            {label: '微信', value: '微信'}
           ],
         },
-        { field: 'order_status',
+        {
+          field: 'order_status',
           title: '订单状态',
           filters: [
-            { label: '未支付', value: '未支付' },
-            { label: '已退款', value: '已退款' },
-            { label: '退款异常', value: '退款异常' },
-            { label: '支付成功', value: '支付成功' },
-            { label: '用户已取消', value: '用户已取消' },
-            { label: '超时已关闭', value: '用户已取消' },
+            {label: '未支付', value: '未支付'},
+            {label: '已退款', value: '已退款'},
+            {label: '退款异常', value: '退款异常'},
+            {label: '支付成功', value: '支付成功'},
+            {label: '用户已取消', value: '用户已取消'},
+            {label: '超时已关闭', value: '用户已取消'},
           ],
           sortable: true,
         },
-        { field: 'create_time',
+        {
+          field: 'create_time',
           title: '交易时间',
           sortable: true,
         },
@@ -83,26 +96,138 @@ export default defineComponent({
         },
         ajax: {
           // 接收 Promise
-          query: ({ page }) => {
+          query: ({page}) => {
             return new Promise(resolve => {
               setTimeout(() => {
                 const list = [
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' },
-                  { name: 'Test1', unit_price: 'T1', order_amount: 'Develop', payment_type: 'Man', order_status: 28, create_time: 'Shenzhen' }
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  },
+                  {
+                    name: 'Test1',
+                    unit_price: 'T1',
+                    order_amount: 'Develop',
+                    payment_type: 'Man',
+                    order_status: 28,
+                    create_time: 'Shenzhen'
+                  }
                 ]
                 resolve({
                   page: {
@@ -117,31 +242,35 @@ export default defineComponent({
       }
     })
 
+    list()
     return {
       gridOptions,
-      orderList
+      orderList,
+      list,
     }
   }
 })
 </script>
 
-<style lang="scss"  scoped>
+<style lang="scss" scoped>
 
-.order_body{
+.order_body {
   position: relative;
   background: #e8e2e0;
-  @include diy_size_minHeight(100vw,100vh);
+  @include diy_size_minHeight(100vw, 100vh);
   padding-bottom: 50px;
-  .order_header{
+
+  .order_header {
     position: absolute;
     background: #ffffff;
-    @include diy_size_except(100vw,50px)
+    @include diy_size_except(100vw, 50px)
   }
-  .order_body_content{
+
+  .order_body_content {
     position: absolute;
     left: 20vw;
     top: 100px;
-    @include diy_size_minHeight(60vw,800px);
+    @include diy_size_minHeight(60vw, 800px);
     background: #ffffff;
     border: {
       radius: 20px;

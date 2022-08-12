@@ -16,7 +16,12 @@ const routes = [
     path: '/indexOrder',
     name: 'IndexOrder',
     component: () => import('../views/IndexOrder.vue')
-  }
+  },
+  {
+    path: '/indexProduct',
+    name: 'IndexProduct',
+    component: () => import('../views/IndexProduct.vue')
+  },
 ]
 
 const router = createRouter({
