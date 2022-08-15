@@ -4,9 +4,9 @@ import request from '@/utils/request'
 export default {
 
   //发起支付请求
-  tradePagePay(productId,userId) {
+  tradePagePay(productId,userId,productAmount) {
     return request({
-      url: '/api/ali-pay/trade/page/pay/' + productId + '/' + userId,
+      url: '/api/ali-pay/trade/page/pay/' + productId + '/' + userId+'/'+productAmount,
       method: 'post'
     })
   },
@@ -31,6 +31,7 @@ export default {
       method: 'post'
     })
   },
+  // 商品列表
   productList() {
     return request({
       url: '/api/product/list',

@@ -103,7 +103,7 @@ export default defineComponent({
         { field: 'order_no', title: '订单号' },
         { field: 'title', title: '订单' },
         { field: 'price', title: '单价' },
-        { field: 'total', title: '数量' },
+        { field: 'product_amounts', title: '数量' },
         { field: 'total_fee', title: '实付款' },
         { field: 'payment_type', title: '支付方式' },
         { field: 'order_status', title: '订单状态' },
@@ -120,21 +120,25 @@ export default defineComponent({
           query: ({ page }) => {
             return new Promise(resolve => {
               gridOptions.loading = true
-              setTimeout(() => {
-               gridOptions.loading = false
-                const list = [
-                  { order_no: 'ORDER_20220812162010629', title: '商品1', price: '￥10.00', total: '3', total_fee: '￥30.00', payment_type: '支付宝', order_status: '已付款',update_time:"2022-08-12 16:53:03" },
-                  { order_no: 'ORDER_20220812162010629', title: '商品1', price: '￥10.00', total: '3', total_fee: '￥30.00', payment_type: '支付宝', order_status: '已付款',update_time:"2022-08-12 16:53:03" },
-                  { order_no: 'ORDER_20220812162010629', title: '商品1', price: '￥10.00', total: '3', total_fee: '￥30.00', payment_type: '支付宝', order_status: '已付款',update_time:"2022-08-12 16:53:03" },
-                  { order_no: 'ORDER_20220812162010629', title: '商品1', price: '￥10.00', total: '3', total_fee: '￥30.00', payment_type: '支付宝', order_status: '已付款',update_time:"2022-08-12 16:53:03" },
-                ]
+              aliPayApi.list(96).then((response) => {
+                orderList.list=response.data.list;
+
+                gridOptions.loading = false
+                const list=orderList.list;
+                // const list = [
+                //   { order_no: 'ORDER_20220812162010629', title: '商品1', price: '￥10.00', total: '3', total_fee: '￥30.00', payment_type: '支付宝', order_status: '已付款',update_time:"2022-08-12 16:53:03" },
+                //   { order_no: 'ORDER_20220812162010629', title: '商品1', price: '￥10.00', total: '3', total_fee: '￥30.00', payment_type: '支付宝', order_status: '已付款',update_time:"2022-08-12 16:53:03" },
+                //   { order_no: 'ORDER_20220812162010629', title: '商品1', price: '￥10.00', total: '3', total_fee: '￥30.00', payment_type: '支付宝', order_status: '已付款',update_time:"2022-08-12 16:53:03" },
+                //   { order_no: 'ORDER_20220812162010629', title: '商品1', price: '￥10.00', total: '3', total_fee: '￥30.00', payment_type: '支付宝', order_status: '已付款',update_time:"2022-08-12 16:53:03" },
+                // ]
                 resolve({
                   page: {
                     total: list.length
                   },
                   result: list.slice((page.currentPage - 1) * page.pageSize, page.currentPage * page.pageSize)
                 })
-              }, 100)
+
+              })
             })
           }
         }
