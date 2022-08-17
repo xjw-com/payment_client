@@ -71,10 +71,18 @@
                 </template>{{ row.order_status }}
              </a-tag>
           </span>
+          <span v-if="row.order_status==='交易结束'">
+             <a-tag color="#ff4d4f">
+                <template #icon>
+                  <smile-outlined />
+                </template>{{ row.order_status }}
+             </a-tag>
+          </span>
+
         </template>
         <template #operation_default="{ row }">
           <span v-if="row.order_status==='支付成功'">
-            <a-button type="link" @click="alipayRefund(row.order_no)">退款</a-button>
+            <a-button type="link" @click="alipayRefund(row)">退款</a-button>
           </span>
           <span v-else-if="row.order_status==='未支付'">
             <a-button type="link" @click="cancelPurchase(row.order_no)">取消购买</a-button>
@@ -87,22 +95,23 @@
 
 <!--  退款理由弹出框-->
   <a-modal
-      v-model:visible="refundVisible"
-      :title="refundTitle"
+      v-model:visible="refund.visible"
+      :title="refund.title"
       centered
       @ok="refundOk"
   >
     <template #footer>
-      <a-button key="back" @click="refundVisible=false">取消退款</a-button>
-      <a-button key="submit" type="primary" :loading="refundLoading" @click="refundOk">确认退款</a-button>
+      <a-button key="back" @click="refund.visible=false">取消退款</a-button>
+      <a-button key="submit" type="primary" :loading="refund.loading" @click="refundOk">确认退款</a-button>
     </template>
-    <a-radio-group v-model:value="reason" :options="refundReasonOptions" />
+    <a-radio-group v-model:value="refund.reason" :options="refundReasonOptions" />
   </a-modal>
 </template>
 
 <script>
+import { getDays } from "@/utils/globaljs"
 import aliPayApi from "@/api/aliPayApi";
-import { defineComponent, reactive, ref,toRefs } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { message } from 'ant-design-vue';
 import {
   AlipayOutlined,
@@ -114,6 +123,7 @@ import {
   LoadingOutlined,
   CheckOutlined,
   WarningOutlined,
+  SmileOutlined
 } from '@ant-design/icons-vue';
 
 
@@ -130,7 +140,8 @@ export default defineComponent({
     InfoCircleOutlined,
     LoadingOutlined,
     CheckOutlined,
-    WarningOutlined
+    WarningOutlined,
+    SmileOutlined
   },
   setup() {
     const gridOptions = reactive({
@@ -192,79 +203,6 @@ export default defineComponent({
                 gridOptions.loading = false
                 const list=orderList;
               gridOptions.loading = false
-              // const list = [
-              //   {
-              //     order_no: 'ORDER_20220812162010629',
-              //     title: '商品1',
-              //     price: '￥10.00',
-              //     total: '3',
-              //     total_fee: '￥30.00',
-              //     payment_type: '支付宝',
-              //     order_status: '支付成功',
-              //     update_time: "2022-08-12 16:53:03"
-              //   },
-              //   {
-              //     order_no: 'ORDER_20220812162010629',
-              //     title: '商品1',
-              //     price: '￥10.00',
-              //     total: '3',
-              //     total_fee: '￥30.00',
-              //     payment_type: '微信',
-              //     order_status: '未支付',
-              //     update_time: "2022-08-12 16:53:03"
-              //   },
-              //   {
-              //     order_no: 'ORDER_20220812162010629',
-              //     title: '商品1',
-              //     price: '￥10.00',
-              //     total: '3',
-              //     total_fee: '￥30.00',
-              //     payment_type: '支付宝',
-              //     order_status: '超时已关闭',
-              //     update_time: "2022-08-12 16:53:03"
-              //   },
-              //
-              //   {
-              //     order_no: 'ORDER_20220812162010629',
-              //     title: '商品1',
-              //     price: '￥10.00',
-              //     total: '3',
-              //     total_fee: '￥30.00',
-              //     payment_type: '微信',
-              //     order_status: '用户已取消',
-              //     update_time: "2022-08-12 16:53:03"
-              //   },
-              //   {
-              //     order_no: 'ORDER_20220812162010629',
-              //     title: '商品1',
-              //     price: '￥10.00',
-              //     total: '3',
-              //     total_fee: '￥30.00',
-              //     payment_type: '支付宝',
-              //     order_status: '退款异常',
-              //     update_time: "2022-08-12 16:53:03"
-              //   },
-              //   {
-              //     order_no: 'ORDER_20220812162010629',
-              //     title: '商品1',
-              //     price: '￥10.00',
-              //     total: '3',
-              //     total_fee: '￥30.00',
-              //     payment_type: '支付宝',
-              //     order_status: '退款中',
-              //     update_time: "2022-08-12 16:53:03"
-              //   },
-              //   {
-              //     order_no: 'ORDER_20220812162010629',
-              //     title: '商品1',
-              //     price: '￥10.00',
-              //     total: '3',
-              //     total_fee: '￥30.00',
-              //     payment_type: '支付宝',
-              //     order_status: '已退款',
-              //     update_time: "2022-08-12 16:53:03"
-              //   },
-              // ]
               resolve({
                 page: {
                   total: list.length
@@ -282,43 +220,47 @@ export default defineComponent({
     //取消订单
     const cancelPurchase=async (order_number)=>{
       aliPayApi.cancel(order_number).then((response) => {
-        message.success(response.message);
+        message.success(response.message).then(()=> location.reload());
       })
     }
 
     // 退款
-    const alipayRefund=async (order_number)=>{
-      refundVisible.value=true;
-      refundTitle.value=`${order_number}退款理由:`;
+    const alipayRefund=async (order)=>{
+      refund.time=order.update_time;
+      if(getDays(refund.time.substring(0,10))>7){
+        message.warning("订单日期超过7天,不允许退款").then(()=>{ location.reload() })
+      }else{
+        refund.visible=true;
+        refund.title=`${order.order_no}退款理由:`;
+      }
     }
 
 
-    const refundVisible = ref(false);
-    const refundTitle=ref("");
-    const refundLoading = ref(false);
-    const refundReason = reactive({
-      reason: [],
-    });
     const refundOk = () => {
-      refundLoading.value = true;
-      aliPayApi.refunds(refundTitle.value.replace("退款理由:",""),refundReason.reason.toString()).then((response) => {
-        refundLoading.value = false;
-        refundVisible.value=false;
-        message.success(response);
+      refund.loading = true;
+      aliPayApi.refunds(refund.title.replace("退款理由:",""),refund.reason.toString()).then((response) => {
+        refund.loading = false;
+        refund.visible = false;
+        message.success(response.data).then(()=> location.reload());
       })
     };
 
+
+    const refund=reactive({
+      visible:false,
+      title:"",
+      time:"",
+      loading:false,
+      reason:[],
+    })
 
     return {
       gridOptions,
       cancelPurchase,
       alipayRefund,
-      refundTitle,
-      refundVisible,
-      refundLoading,
+      refund,
       refundOk,
       refundReasonOptions,
-      ...toRefs(refundReason),
     }
   }
 })
