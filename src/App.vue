@@ -1,7 +1,14 @@
 <template>
+  <AppHeader />
   <router-view/>
 </template>
+<script>
+import AppHeader from "@/components/appHeader";
+export default {
+  components: {AppHeader}
+}
 
+</script>
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

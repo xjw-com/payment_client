@@ -1,6 +1,5 @@
 <template>
   <div class="order_body">
-    <div class="order_header">这里是头部</div>
     <div class="order_body_content">
       <vxe-grid v-bind="gridOptions">
         <template #payment_default="{ row }">
@@ -241,7 +240,7 @@ export default defineComponent({
       aliPayApi.refunds(refund.title.replace("退款理由:",""),refund.reason.toString()).then((response) => {
         refund.loading = false;
         refund.visible = false;
-        message.success(response.data).then(()=> location.reload());
+        message.success(response.message).then(()=> location.reload());
       })
     };
 

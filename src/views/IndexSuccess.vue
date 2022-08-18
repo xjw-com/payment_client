@@ -30,10 +30,10 @@ export default {
     const productNo=route.query.out_trade_no;
     const successTips=ref( `订单${productNo}已支付成功!!`);
     const onFinish =async ()=>{
-      await router.push('/indexProduct')
+      await router.push('/')
     }
     const toBuy = async ()=>{
-      await router.push('/indexProduct')
+      await router.push('/')
     }
     const toOrder = async ()=>{
       await router.push('/indexOrder')

@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import IndexView from '../views/IndexPay.vue'
+import IndexView from '../views/IndexProduct.vue'
 
 const routes = [
   {
@@ -13,14 +13,14 @@ const routes = [
     component: () => import('../views/IndexSuccess.vue')
   },
   {
+    path: '/indexDownLoad',
+    name: 'IndexDownLoad',
+    component: () => import('../views/IndexDownload.vue')
+  },
+  {
     path: '/indexOrder',
     name: 'IndexOrder',
     component: () => import('../views/IndexOrder.vue')
-  },
-  {
-    path: '/indexProduct',
-    name: 'IndexProduct',
-    component: () => import('../views/IndexProduct.vue')
   },
 ]
 

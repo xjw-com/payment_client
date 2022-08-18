@@ -37,5 +37,12 @@ export default {
       url: '/api/product/list',
       method: 'get'
     })
+  },
+  // 下载账单
+  downloadBillAliPay(billDate, type) {
+    return request({
+      url: '/api/ali-pay/bill/downloadurl/query/' + billDate + '/' + type,
+      method: 'get'
+    })
   }
 }
