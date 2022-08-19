@@ -133,7 +133,8 @@ export default defineComponent({
     position: absolute;
     left: 20vw;
     top: 60px;
-    @include diy_size_minHeight(60vw, 800px);
+    width: 60vw;
+    padding-bottom: 20px;
 
     .product_card {
       float: left;

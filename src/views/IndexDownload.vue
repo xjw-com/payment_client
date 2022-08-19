@@ -26,7 +26,6 @@
           </a-button>
         </div>
       </a-card>
-
       <a-card hoverable class="download_card">
         <a-card-meta title="月账单下载">
           <template #description>最早可下载2016年1月开始的月账单。不支持下载当月账单，只能下载上一月账单数据</template>
@@ -73,9 +72,11 @@ export default {
     const timeDate = ref();
     const timeMonth = ref();
 
+
     const downDayLoading = ref(false);
     const downMonthLoading = ref(false);
     const downloadBillAliPayDay = async (type) => {
+      console.log(billDate_alipay.value)
       if(timeDate.value!=null){
         downDayLoading.value = true;
         aliPayApi.downloadBillAliPay(timeDate.value, type).then((response) => {
@@ -124,7 +125,7 @@ export default {
       downloadBillAliPayDay,
       downloadBillAliPayMonth,
       disabledDate,
-      disabledMonth
+      disabledMonth,
     }
   }
 }

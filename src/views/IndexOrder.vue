@@ -283,8 +283,8 @@ export default defineComponent({
     position: absolute;
     left: 20vw;
     top: 100px;
-    padding: 5px 10px 5px 10px;
-    @include diy_size_minHeight(60vw, 800px);
+    padding: 15px 10px 15px 10px;
+    width: 60vw;
     background: #ffffff;
     border: {
       radius: 20px;
