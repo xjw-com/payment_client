@@ -73,18 +73,21 @@
           <span v-if="row.order_status==='交易结束'">
              <a-tag color="#ff4d4f">
                 <template #icon>
-                  <smile-outlined />
+                  <smile-outlined/>
                 </template>{{ row.order_status }}
              </a-tag>
           </span>
-
         </template>
         <template #operation_default="{ row }">
           <span v-if="row.order_status==='支付成功'">
             <a-button type="link" @click="alipayRefund(row)">退款</a-button>
           </span>
+          <span v-else-if="row.order_status==='退款异常'">
+            <div>交易不存在</div><div>请核实订单</div>
+          </span>
           <span v-else-if="row.order_status==='未支付'">
-            <a-button type="link" @click="cancelPurchase(row.order_no)">取消购买</a-button>
+            <div class="order_button" @click="cancelPurchase(row.order_no)">取消购买</div>
+            <div class="order_button" @click="continueToPurchase(row.product_id,row.product_amounts)">付款购买</div>
           </span>
         </template>
       </vxe-grid>
@@ -92,7 +95,7 @@
   </div>
 
 
-<!--  退款理由弹出框-->
+  <!--  退款理由弹出框-->
   <a-modal
       v-model:visible="refund.visible"
       :title="refund.title"
@@ -103,15 +106,15 @@
       <a-button key="back" @click="refund.visible=false">取消退款</a-button>
       <a-button key="submit" type="primary" :loading="refund.loading" @click="refundOk">确认退款</a-button>
     </template>
-    <a-radio-group v-model:value="refund.reason" :options="refundReasonOptions" />
+    <a-radio-group v-model:value="refund.reason" :options="refundReasonOptions"/>
   </a-modal>
 </template>
 
 <script>
-import { getDays } from "@/utils/globaljs"
+import {getDays} from "@/utils/globaljs"
 import aliPayApi from "@/api/aliPayApi";
-import { defineComponent, reactive } from 'vue';
-import { message } from 'ant-design-vue';
+import {defineComponent, reactive} from 'vue';
+import {message} from 'ant-design-vue';
 import {
   AlipayOutlined,
   WechatOutlined,
@@ -177,6 +180,7 @@ export default defineComponent({
           showOverflow: true,
           slots: {default: 'order_default'}
         },
+        {field: 'create_time', title: '订单创建时间'},
         {field: 'update_time', title: '交易时间'},
         {
           field: 'operation',
@@ -197,17 +201,17 @@ export default defineComponent({
             return new Promise(resolve => {
               gridOptions.loading = true
               aliPayApi.list(96).then((response) => {
-               const orderList=response.data.list;
+                const orderList = response.data.list;
 
                 gridOptions.loading = false
-                const list=orderList;
-              gridOptions.loading = false
-              resolve({
-                page: {
-                  total: list.length
-                },
-                result: list.slice((page.currentPage - 1) * page.pageSize, page.currentPage * page.pageSize)
-              })
+                const list = orderList;
+                gridOptions.loading = false
+                resolve({
+                  page: {
+                    total: list.length
+                  },
+                  result: list.slice((page.currentPage - 1) * page.pageSize, page.currentPage * page.pageSize)
+                })
 
               })
             })
@@ -217,40 +221,50 @@ export default defineComponent({
     })
 
     //取消订单
-    const cancelPurchase=async (order_number)=>{
+    const cancelPurchase = async (order_number) => {
       aliPayApi.cancel(order_number).then((response) => {
-        message.success(response.message).then(()=> location.reload());
+        message.success(response.message).then(() => location.reload());
       })
     }
 
     // 退款
-    const alipayRefund=async (order)=>{
-      refund.time=order.update_time;
-      if(getDays(refund.time.substring(0,10))>7){
-        message.warning("订单日期超过7天,不允许退款").then(()=>{ location.reload() })
-      }else{
-        refund.visible=true;
-        refund.title=`${order.order_no}退款理由:`;
+    const alipayRefund = async (order) => {
+      refund.time = order.update_time;
+      if (getDays(refund.time.substring(0, 10)) > 7) {
+        message.warning("订单日期超过7天,不允许退款").then(() => {
+          location.reload()
+        })
+      } else {
+        refund.visible = true;
+        refund.title = `${order.order_no}退款理由:`;
       }
     }
 
 
     const refundOk = () => {
       refund.loading = true;
-      aliPayApi.refunds(refund.title.replace("退款理由:",""),refund.reason.toString()).then((response) => {
+      aliPayApi.refunds(refund.title.replace("退款理由:", ""), refund.reason.toString()).then((response) => {
         refund.loading = false;
         refund.visible = false;
-        message.success(response.message).then(()=> location.reload());
+        message.success(response.message).then(() => location.reload());
       })
     };
 
+    // 继续购买
+    const continueToPurchase = (productId, productAmounts) => {
+      aliPayApi.tradePagePay(productId, 96, productAmounts).then((response) => {
+        //将支付宝返回的表单字符串写在浏览器中，表单会自动触发submit提交
+        document.write(response.data.formStr)
+      })
+    }
 
-    const refund=reactive({
-      visible:false,
-      title:"",
-      time:"",
-      loading:false,
-      reason:[],
+
+    const refund = reactive({
+      visible: false,
+      title: "",
+      time: "",
+      loading: false,
+      reason: [],
     })
 
     return {
@@ -259,6 +273,7 @@ export default defineComponent({
       alipayRefund,
       refund,
       refundOk,
+      continueToPurchase,
       refundReasonOptions,
     }
   }
@@ -281,14 +296,22 @@ export default defineComponent({
 
   .order_body_content {
     position: absolute;
-    left: 20vw;
+    left: 10vw;
     top: 100px;
     padding: 15px 10px 15px 10px;
-    width: 60vw;
+    width: 80vw;
     background: #ffffff;
     border: {
       radius: 20px;
     };
+
+    .order_button {
+      color: #1890ff;
+      cursor: pointer;
+      &:hover {
+        color: #ff0036;
+      }
+    }
   }
 }
 </style>

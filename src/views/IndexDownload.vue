@@ -76,7 +76,6 @@ export default {
     const downDayLoading = ref(false);
     const downMonthLoading = ref(false);
     const downloadBillAliPayDay = async (type) => {
-      console.log(billDate_alipay.value)
       if(timeDate.value!=null){
         downDayLoading.value = true;
         aliPayApi.downloadBillAliPay(timeDate.value, type).then((response) => {
