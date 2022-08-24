@@ -83,7 +83,7 @@ export default {
           console.log(response.data.downloadUrl)
           const element = document.createElement('a')
           element.setAttribute('href', response.data.downloadUrl)
-          element.setAttribute('download', this.billDate_alipay + '-' + type)
+          element.setAttribute('download', timeDate.value + '-' + type)
           element.style.display = 'none'
           element.click()
         })
@@ -100,7 +100,7 @@ export default {
           console.log(response.data.downloadUrl)
           const element = document.createElement('a')
           element.setAttribute('href', response.data.downloadUrl)
-          element.setAttribute('download', this.billDate_alipay + '-' + type)
+          element.setAttribute('download', timeMonth.value + '-' + type)
           element.style.display = 'none'
           element.click()
         })
