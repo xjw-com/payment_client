@@ -3,7 +3,8 @@ import { ElMessage  } from 'element-plus'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env["VUE_APP_BASE_API "], // api 的 base_url  后端的url
+  // process.env[VUE_APP_BASE_API] 写法识别不了
+  baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url  后端的url
   timeout: 20000 // 请求超时时间
 })
 
